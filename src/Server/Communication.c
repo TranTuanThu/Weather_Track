@@ -1,12 +1,20 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <mosquitto.h>
 #include "Communication.h"
 
 struct mosquitto *mosqsub;
 struct mosquitto *mosqpub;
-// struct mosquitto_message *dst;
 
+static int count = 0;
+char tempt[5];
+char humid[5];
+
+/*---------------------------------------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------------------------------------*/
 
 bool initializeConnectBrokerToReceive(){
     int status = 0;
@@ -60,10 +68,17 @@ void sendData(char *payload){
 }
 
 
-void dataCallback(struct mosquitto *mosqsub, void *obj, const struct mosquitto_message *message){
-    struct mosquitto_message *dst;
-    mosquitto_message_copy(dst, message);
-    printf("got message '%.*s' for topic '%s'\n", dst->payloadlen, (char*) dst->payload, dst->topic);
+static void dataCallback(struct mosquitto *mosqsub, void *obj, const struct mosquitto_message *message){
+    struct mosquitto_message dst;
+
+    mosquitto_message_copy(&dst, message);
+    (char*) dst.payload;
+    
+    memcpy(tempt, dst.payload, 4);
+    memcpy(humid, dst.payload+4, 4);
+    count = 1;
+    printf("got message '%.*s' for topic '%s'\n", message->payloadlen, (char*) message->payload, message->topic);
+    
 }
 
 
@@ -72,18 +87,42 @@ void receiveData(){
 }
 
 
-int main(){
-    bool status;
-    status = initializeConnectBrokerToReceive();
+// void temPt(){
+//     strtod(tempt, NULL);
+// }
 
-    if (status)
-    {
-        while (1)
-        {
-            receiveData();
-            // printf("%s/n", dst->payload);
-        }
-    }
-    
-    return 0;
+
+// void HumId(){
+//     strtod(humid, NULL);
+// }
+
+
+void closeBrokerConnect(){
+    mosquitto_disconnect(mosqsub);
+    mosquitto_disconnect(mosqpub);
+    mosquitto_destroy(mosqsub);
+    mosquitto_destroy(mosqpub);
+    mosquitto_lib_cleanup();
 }
+
+
+// int main(){
+//     bool status;
+//     status = initializeConnectBrokerToReceive();
+
+//     if (status)
+//     {
+//         receiveData();
+//         while (1)
+//         {   
+//             if (count == 1)
+//             {
+//                 closeBrokerConnect();
+//                 break;
+//             }
+//         }
+//         printf("%s, %s\n", tempt, humid);
+//     }
+
+//     return 0;
+// }

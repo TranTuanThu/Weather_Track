@@ -11,6 +11,7 @@ bool initializeConnectBrokerToReceive();
 bool initializeConnectBrokerToSend();
 void receiveData();
 void sendData(char *);
+void closeBrokerConnect();
 
 
 #endif

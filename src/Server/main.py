@@ -1,7 +1,13 @@
+from ctypes import *
 from tkinter import ttk
 from tkinter import messagebox as mb
 import tkinter as tk
 import tkinter.font as tkFont
+
+communication = C('./libcom.so')
+
+communication.initializeConnectBrokerToReceive()
+
 
 font14 = int(14)
 font18 = int(18)
