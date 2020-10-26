@@ -43,7 +43,7 @@ void sendSensorData(char *payload){
 }
 
 
-void messageCallback(struct mosquitto *mosqsub, void *obj, const struct mosquitto_message *message){
+static void messageCallback(struct mosquitto *mosqsub, void *obj, const struct mosquitto_message *message){
 
     printf("THTHTHTH\n");
 
