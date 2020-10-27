@@ -7,7 +7,7 @@
 struct mosquitto *mosqsub;
 struct mosquitto *mosqpub;
 
-static int count = 0;
+int count = 0;
 char tempt[5];
 char humid[5];
 
@@ -87,16 +87,6 @@ void receiveData(){
 }
 
 
-// void temPt(){
-//     strtod(tempt, NULL);
-// }
-
-
-// void HumId(){
-//     strtod(humid, NULL);
-// }
-
-
 void closeBrokerConnect(){
     mosquitto_disconnect(mosqsub);
     mosquitto_disconnect(mosqpub);
@@ -105,6 +95,34 @@ void closeBrokerConnect(){
     mosquitto_lib_cleanup();
 }
 
+
+void processReceivedData(){
+    bool status;
+    status = initializeConnectBrokerToReceive();
+
+    if (status)
+    {
+        receiveData();
+        while (1)
+        {
+            if (count == 1)
+            {
+                count = 0;
+                closeBrokerConnect();
+                break;
+            }
+        }
+    }
+}
+
+double temPt(){
+    return strtod(tempt, NULL);
+}
+
+
+double humId(){
+    return strtod(humid, NULL);
+}
 
 // int main(){
 //     bool status;
