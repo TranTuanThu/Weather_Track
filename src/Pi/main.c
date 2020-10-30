@@ -5,13 +5,12 @@
 #include "SensorCommunication.h"
 #include "ServerCommunication.h"
 
-char threshold = '0';
 
-bool initializeConnectToSend(){
+bool initializeConnect(){
     int scs = initializeConnectSensor();
-    int scb = initializeConnectBrokerToSend();
+    bool scb = initializeConnectBroker();
 
-    if(scs >= 0 && scb == MOSQ_ERR_SUCCESS)
+    if(scs >= 0 && scb)
     {
         printf("Connect Success!...\n");
         return true;
@@ -26,26 +25,24 @@ bool initializeConnectToSend(){
 
 void handleSensorData(){
     char *payload;
+
     payload = receiveSensorData();
-    // strcat(payload,threshold);
     sendSensorData(payload);
 }
 
 
 void handleServerRequest(){
-
+    processServerRequest();
 }
 
 
 int main(){
-    bool status = initializeConnectToSend();
-    
-    if(status)
+    bool status = initializeConnect();
+
+    while (status)
     {
-        while (1)
-        {
-            handleSensorData();
-        }
+        handleServerRequest();
+        handleSensorData();
     }
     
     return 0;

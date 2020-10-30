@@ -1,10 +1,11 @@
 #include <pigpio.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include "SensorCommunication.h"
+#include "ServerCommunication.h"
 
-
-bsc_xfer_t xfer;
+static bsc_xfer_t xfer;
 
 int initializeConnectSensor(){
     gpioInitialise();
@@ -36,30 +37,31 @@ char* receiveSensorData(){
             break;
         }
     }
-    
+    // closeSensorConnect();
+
     return payload;
 }
 
 
 
-void closeSensorConnect(){
-    gpioInitialise();
-    // cout << "Initialized GPIOs\n";
-    printf("Initialized GPIOs\n");
+// void closeSensorConnect(){
+//     gpioInitialise();
+//     // cout << "Initialized GPIOs\n";
+//     printf("Initialized GPIOs\n");
 
-    xfer.control = getControlBits(SLAVE_I2C_ADDRESS, false);
-    bscXfer(&xfer);
-    // cout << "Closed slave.\n";
-    printf("Closed slave.\n");
+//     xfer.control = getControlBits(SLAVE_I2C_ADDRESS, false);
+//     bscXfer(&xfer);
+//     // cout << "Closed slave.\n";
+//     printf("Closed slave.\n");
 
-    gpioTerminate();
-    // cout << "Terminated GPIOs.\n";
-    printf("Terminated GPIOs.\n");
-}
+//     gpioTerminate();
+//     // cout << "Terminated GPIOs.\n";
+//     printf("Terminated GPIOs.\n");
+// }
 
 
 
-int getControlBits(int address /* max 127 */, bool open) {
+static int getControlBits(int address /* max 127 */, bool open) {
     /*
     Excerpt from http://abyz.me.uk/rpi/pigpio/cif.html#bscXfer regarding the control bits:
 

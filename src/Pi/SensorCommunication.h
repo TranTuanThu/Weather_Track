@@ -6,7 +6,7 @@
 
 int initializeConnectSensor();
 char* receiveSensorData();
-void closeSensorConnect();
-int getControlBits(int, bool);
+// void closeSensorConnect();
+static int getControlBits(int, bool);
 
 #endif

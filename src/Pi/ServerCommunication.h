@@ -7,14 +7,17 @@
 #define HOST "localhost"
 #define PORT 1883
 #define TOPIC_TEMPT_HUMID "TemptHumid"
-#define TOPIC1 ""
+#define TOPIC_UPDATE_THRESHOLD "UpdateThreshold"
 #define TOPIC2 ""
 #define KEEPALIVE 60
 
 
-int initializeConnectBrokerToSend();
-int initializeConnectBrokerToReceive();
+bool initializeConnectBroker();
+static int initializeConnectBrokerToSend();
+static int initializeConnectBrokerToReceive();
 void sendSensorData(char *);
-void receiveMessageCallback();
+static void receiveMessageCallback();
+
+void processServerRequest();
 
 #endif
