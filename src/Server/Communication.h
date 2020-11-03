@@ -1,21 +1,19 @@
 #ifndef Communication_H
 #define Communication_H
 
-#define HOST "192.168.0.155"
+#define HOST "192.168.0.168"
 #define PORT 1883
 #define TOPIC_TEMPT_HUMID "TemptHumid"
-#define TOPIC_ ""
+#define TOPIC_UPDATE_THRESHOLD "UpdateThreshold"
 #define KEEPALIVE 60
 
-// extern int count = 0;
-// extern char tempt[5];
-// extern char humid[5];
 
-bool initializeConnectBrokerToReceive();
-bool initializeConnectBrokerToSend();
-void closeBrokerConnect();
-void receiveData();
-void sendData(char *);
+bool initializeConnectBroker();
+static bool initializeConnectBrokerToReceive();
+static bool initializeConnectBrokerToSend();
+static void closeBrokerConnect();
+static void receiveData();
+// void sendData(char *);
 void processReceivedData();
 double temPt();
 double humId();
