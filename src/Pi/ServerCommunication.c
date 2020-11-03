@@ -12,12 +12,12 @@ static int countsub = 0;
 static int countpub = 0;
 
 bool initializeConnectBroker(){
-    bool status;
+    int statuspuber, statussuber;
     
-    int x = initializeConnectBrokerToSend();
-    int y = initializeConnectBrokerToReceive();
+    statuspuber = initializeConnectBrokerToSend();
+    statussuber = initializeConnectBrokerToReceive();
 
-    if (x == MOSQ_ERR_SUCCESS&&y == MOSQ_ERR_SUCCESS)
+    if (statuspuber == MOSQ_ERR_SUCCESS&&statussuber == MOSQ_ERR_SUCCESS)
     {
         return true;
     }else

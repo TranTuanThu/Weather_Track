@@ -9,4 +9,5 @@ char* receiveSensorData();
 // void closeSensorConnect();
 static int getControlBits(int, bool);
 
+
 #endif
