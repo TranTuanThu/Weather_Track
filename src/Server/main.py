@@ -77,9 +77,12 @@ def catchEventOk():
     low = entryLowerthres.get()
     up = entryUpperthres.get()
     payload = low + up
-    # pcc.initializeConnectBroker()
-    pcc.processUpdateThreshold(payload)
-    print("Update Config: ", payload)
+    if mb.askyesno('Verify', 'Really update?'):
+        mb.showwarning('Yes', 'Update successful')
+        pcc.processUpdateThreshold(payload)
+        print("Update Config: ", payload)
+    else:
+        mb.showinfo('No', 'Quit has been cancelled')
 
 
 buttonOK = tk.Button(master=admin, text="Ok", bg="yellow",font=tkFont.Font(size=font14), command=catchEventOk)
