@@ -8,15 +8,34 @@ struct mosquitto *mosqsub;
 struct mosquitto *mosqpub;
 
 static int count = 0;
-char tempt[5];
-char humid[5];
+static char tempt[5];
+static char humid[5];
+static char warning[2];
 
 /*---------------------------------------------------------------------------------------------------------*/
 
 
 /*---------------------------------------------------------------------------------------------------------*/
 
-bool initializeConnectBrokerToReceive(){
+bool initializeConnectBroker(){
+    bool statussuber, statuspuber;
+
+    statussuber = initializeConnectBrokerToReceive();
+    statuspuber = initializeConnectBrokerToSend();
+
+    if (statussuber&&statuspuber)
+    {
+        printf("Mosqpub Connect Success!...\n");
+        return true;
+    }else
+    {
+        printf("Mosqpub Connect False!>>>\n");
+        return false;
+    }
+}
+
+
+static bool initializeConnectBrokerToReceive(){
     int status = 0;
     mosquitto_lib_init();
     mosqsub = mosquitto_new(NULL, true, NULL);
@@ -30,17 +49,15 @@ bool initializeConnectBrokerToReceive(){
 
     if(status == MOSQ_ERR_SUCCESS)
     {
-        printf("Mosqsub Connect Success!...\n");
         return true;
     }else
     {
-        printf("Mosqsub Connect False!>>>\n");
         return false;
     }
 }
 
 
-bool initializeConnectBrokerToSend(){
+static bool initializeConnectBrokerToSend(){
     int status = 0;
     mosquitto_lib_init();
     mosqpub = mosquitto_new(NULL, true, NULL);
@@ -53,19 +70,17 @@ bool initializeConnectBrokerToSend(){
 
     if(status == MOSQ_ERR_SUCCESS)
     {
-        printf("Mosqpub Connect Success!...\n");
         return true;
     }else
     {
-        printf("Mosqpub Connect False!>>>\n");
         return false;
     }
 }
 
 
-void sendData(char *payload){
-    mosquitto_publish(mosqpub, NULL, TOPIC_, strlen(payload), payload, 0, false);
-}
+// void sendData(char *payload){
+//     mosquitto_publish(mosqpub, NULL, TOPIC_UPDATE_THRESHOLD, strlen(payload), payload, 0, false);
+// }
 
 
 static void dataCallback(struct mosquitto *mosqsub, void *obj, const struct mosquitto_message *message){
@@ -76,28 +91,19 @@ static void dataCallback(struct mosquitto *mosqsub, void *obj, const struct mosq
     
     memcpy(tempt, dst.payload, 4);
     memcpy(humid, dst.payload+4, 4);
+    memcpy(warning, dst.payload+8, 1);
     count = 1;
     printf("got message '%.*s' for topic '%s'\n", message->payloadlen, (char*) message->payload, message->topic);
     
 }
 
 
-void receiveData(){
+static void receiveData(){
     mosquitto_message_callback_set(mosqsub, dataCallback);
 }
 
 
-// void temPt(){
-//     strtod(tempt, NULL);
-// }
-
-
-// void HumId(){
-//     strtod(humid, NULL);
-// }
-
-
-void closeBrokerConnect(){
+static void closeBrokerConnect(){
     mosquitto_disconnect(mosqsub);
     mosquitto_disconnect(mosqpub);
     mosquitto_destroy(mosqsub);
@@ -106,23 +112,36 @@ void closeBrokerConnect(){
 }
 
 
-// int main(){
-//     bool status;
-//     status = initializeConnectBrokerToReceive();
+void processReceivedData(){
+    // bool status;
+    // status = initializeConnectBroker();
 
-//     if (status)
-//     {
-//         receiveData();
-//         while (1)
-//         {   
-//             if (count == 1)
-//             {
-//                 closeBrokerConnect();
-//                 break;
-//             }
-//         }
-//         printf("%s, %s\n", tempt, humid);
-//     }
+    // if (status)
+    // {
+        receiveData();
+        while (1)
+        {
+            if (count == 1)
+            {
+                count = 0;
+                closeBrokerConnect();
+                break;
+            }
+        }
+    // }
+}
 
-//     return 0;
-// }
+
+double temPt(){
+    return strtod(tempt, NULL);
+}
+
+
+double humId(){
+    return strtod(humid, NULL);
+}
+
+
+double warnIng(){
+    return strtod(warning, NULL);
+}
