@@ -113,22 +113,17 @@ static void closeBrokerConnect(){
 
 
 void processReceivedData(){
-    // bool status;
-    // status = initializeConnectBroker();
-
-    // if (status)
-    // {
-        receiveData();
-        while (1)
+    
+    receiveData();
+    while (1)
+    {
+        if (count == 1)
         {
-            if (count == 1)
-            {
-                count = 0;
-                closeBrokerConnect();
-                break;
-            }
+            count = 0;
+            closeBrokerConnect();
+            break;
         }
-    // }
+    }
 }
 
 
